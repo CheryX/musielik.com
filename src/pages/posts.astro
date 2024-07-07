@@ -1,0 +1,48 @@
+---
+import BaseLayout from "../layouts/base_layout.astro";
+import BlogPostCard from "../components/blog_post_card.astro";
+import Icon from "../components/icons.astro";
+import { getCollection } from "astro:content";
+
+const allBlogPosts = await getCollection("blog");
+allBlogPosts.sort((a, b) => {
+  return b.data.pubDate.getTime() - a.data.pubDate.getTime();
+});
+---
+
+<BaseLayout>
+  <section id="title" class="container">
+    <h1 class="small primary">
+      <a href="/"><Icon type="back" weight="heavy" /> Maciej Musielik</a>
+    </h1>
+    <h2 class="large">Post archive</h2>
+
+    <div class="big-grid">
+      {
+        allBlogPosts.map((post) => {
+          return (
+            <BlogPostCard
+              title={post.data.title}
+              pubDate={post.data.pubDate}
+              tags={post.data.tags}
+              thumbnailUrl={post.data.thumbnailUrl}
+              href={post.slug}
+            />
+          );
+        })
+      }
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  h1.small {
+    font-size: 24pt;
+    font-weight: 600;
+  }
+
+  h2.large {
+    font-size: 48pt;
+    font-weight: 700;
+  }
+</style>

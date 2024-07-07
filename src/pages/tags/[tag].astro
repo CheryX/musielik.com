@@ -1,0 +1,68 @@
+---
+import BaseLayout from "../../layouts/base_layout.astro";
+import BlogPostCard from "../../components/blog_post_card.astro";
+import Icon from "../../components/icons.astro";
+import { getCollection } from "astro:content";
+
+export async function getStaticPaths() {
+  const allPosts = await getCollection("blog");
+  const uniqueTags = [
+    ...new Set(allPosts.map((post) => post.data.tags).flat()),
+  ];
+
+  return uniqueTags.map((tag) => {
+    const filteredPosts = allPosts
+      .filter((post) => post.data.tags.includes(tag))
+      .sort((a, b) => {
+        return b.data.pubDate.getTime() - a.data.pubDate.getTime();
+      });
+    return {
+      params: { tag },
+      props: { posts: filteredPosts },
+    };
+  });
+}
+
+const { tag } = Astro.params;
+const { posts } = Astro.props;
+---
+
+<BaseLayout>
+  <section id="title" class="container">
+    <h1 class="small primary">
+      <a href="/"><Icon type="back" weight="heavy" /> Maciej Musielik</a>
+      <a href="/posts">View all posts <Icon type="front" weight="heavy" /></a>
+    </h1>
+    <h2 class="large">Posts with "{tag}" tag</h2>
+
+    <div class="big-grid">
+      {
+        posts.map((post) => {
+          return (
+            <BlogPostCard
+              title={post.data.title}
+              pubDate={post.data.pubDate}
+              tags={post.data.tags}
+              thumbnailUrl={post.data.thumbnailUrl}
+              href={post.slug}
+            />
+          );
+        })
+      }
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  h1.small {
+    display: flex;
+    justify-content: space-between;
+    font-size: 24pt;
+    font-weight: 600;
+  }
+
+  h2.large {
+    font-size: 48pt;
+    font-weight: 700;
+  }
+</style>

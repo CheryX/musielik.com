@@ -1,0 +1,33 @@
+---
+const year = new Date().getFullYear();
+---
+
+<footer class="container">
+  <span>Maciej Musielik &copy; {year}</span>
+  <span>●</span>
+  <span class="socials">
+    <a href="https://github.com/CheryX">github</a>
+    <a href="https://discord.com/users/344491989691269151">discord</a>
+    <a href="https://www.youtube.com/channel/UCBGZMXsnwjwvyyMVqXy3Itw"
+      >youtube</a
+    >
+    <!-- <a href="https://github.com/CheryX">linkedin</a> soon? -->
+  </span>
+</footer>
+
+<style>
+  footer {
+    display: flex;
+
+    align-items: center;
+    gap: 1em;
+
+    padding: 40px;
+    font-size: 15pt;
+    box-sizing: border-box;
+  }
+
+  .socials {
+    text-align: end;
+  }
+</style>

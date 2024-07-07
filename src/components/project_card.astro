@@ -1,0 +1,114 @@
+---
+interface Props {
+  title: string;
+  summary: string;
+  tags: string;
+  year: string;
+  href: string;
+}
+
+const { title, tags, year, summary, href } = Astro.props;
+const mapTags = tags.split(" ");
+---
+
+<a href={href} target="_blank">
+  <div class="card">
+    <div class="detail">
+      <p class="year">
+        {year}
+      </p>
+      <div class="timeline"></div>
+    </div>
+    <div>
+      <h3>{title}</h3>
+      <p class="summary">{summary}</p>
+      <p class="tags">
+        {
+          mapTags.map((tag) => {
+            return <span>{tag}</span>;
+          })
+        }
+      </p>
+    </div>
+  </div>
+</a>
+
+<style>
+  a {
+    display: block;
+    color: inherit;
+    text-decoration: inherit;
+    margin-bottom: 1em;
+  }
+
+  .card {
+    padding: 1.5em;
+    gap: 1em;
+    text-align: left;
+    border-radius: 8px;
+  }
+
+  .card:hover {
+    background-color: rgba(var(--primary), 0.1);
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.2em 0.4em;
+    margin: 0;
+  }
+
+  .tags > span {
+    background-color: rgb(var(--secondary));
+    color: rgb(var(--background));
+    font-weight: 700;
+    padding: 0.2em 0.8em;
+    border-radius: 0.8em;
+  }
+
+  p {
+    margin: 0.4em 0;
+  }
+
+  h3 {
+    margin: 0;
+    font-size: 16pt;
+    color: rgb(var(--strong-text));
+  }
+
+  .year {
+    color: rgba(var(--text), 0.6);
+    font-size: 13pt;
+    margin: 0;
+  }
+  @media only screen and (min-width: 500px) {
+    .card {
+      display: flex;
+    }
+
+    .year {
+      text-align: right;
+      text-wrap: nowrap;
+      min-width: 9ch;
+    }
+
+    .detail {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .timeline {
+      border-right: 1px solid rgba(var(--text), 0.6);
+      margin: 0 1.9ch;
+      flex: 1;
+      translate: 0 1.8em;
+      scale: 1 1.4;
+    }
+
+    :global(article) > *:nth-last-child(3) .timeline {
+      scale: 1 1;
+      translate: 0 0.4em;
+    }
+  }
+</style>

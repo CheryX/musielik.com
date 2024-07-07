@@ -1,0 +1,129 @@
+---
+import Icon from "./icons.astro";
+
+interface Props {
+  title: string;
+  summary: string;
+  thumbnailUrl: string;
+  pinned: boolean;
+  web: boolean;
+  href: string;
+}
+
+const { title, summary, pinned, web, thumbnailUrl, href } = Astro.props;
+const thumbnailPath = `url("/thumbnails/${thumbnailUrl}")`;
+---
+
+<a href={`${href}`}>
+  <div class="card">
+    <div class="cover"></div>
+    <div class="content">
+      <div class="tags">
+        {
+          pinned ? (
+            <div class="pin">
+              <Icon type="pin" weight="light" />
+              PINNED
+            </div>
+          ) : (
+            ""
+          )
+        }
+        {
+          web ? (
+            <div class="pin web">
+              <Icon type="web" weight="light" />
+              WEB
+            </div>
+          ) : (
+            ""
+          )
+        }
+      </div>
+      <div>
+        <h3>{title}</h3>
+        <p>{summary}</p>
+      </div>
+    </div>
+  </div>
+</a>
+
+<style define:vars={{ thumbnailPath }}>
+  .card {
+    display: flex;
+    align-items: center;
+    padding: 1.5em;
+    gap: 1em;
+    border-radius: 8px;
+  }
+
+  .card:hover {
+    background-color: rgba(var(--primary), 0.1);
+  }
+
+  h3 {
+    color: rgb(var(--primary));
+    font-size: 16pt;
+    margin: 0.4em 0;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+
+  p {
+    margin: 0;
+  }
+
+  .tags {
+    display: flex;
+    gap: 0.4em;
+  }
+
+  .pin {
+    display: flex;
+    align-items: center;
+    gap: 0.4em;
+    font-size: 14pt;
+    background-color: rgb(var(--accent));
+    color: rgb(var(--background));
+    font-weight: 700;
+    padding: 0.2em 1.2em;
+    border-radius: 0.4em;
+  }
+
+  .web {
+    background-color: rgb(var(--secondary));
+    color: rgb(var(--background));
+  }
+
+  a {
+    color: inherit;
+    text-decoration: inherit;
+  }
+
+  .cover {
+    display: none;
+    flex: 0 0 auto;
+    width: 128px;
+    background-image: var(--thumbnailPath);
+    background-size: cover;
+    aspect-ratio: 1/1;
+    border-radius: 4px;
+  }
+
+  @media only screen and (min-width: 800px) {
+    .cover {
+      display: block;
+    }
+  }
+</style>

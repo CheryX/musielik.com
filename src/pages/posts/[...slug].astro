@@ -1,0 +1,187 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/base_layout.astro";
+import Icon from "../../components/icons.astro";
+
+export async function getStaticPaths() {
+  const blogEntries = await getCollection("blog");
+  return blogEntries.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+
+const options: Intl.DateTimeFormatOptions = {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+};
+const formattedDate = entry.data.pubDate.toLocaleDateString("en-US", options);
+const wordCount = entry.body.split(" ").length;
+---
+
+<BaseLayout>
+  <section id="title" class="container-article">
+    <h1 class="small primary">
+      <a href="/"><Icon type="back" weight="heavy" /> Maciej Musielik</a>
+      <span>-</span>
+      <a href="/posts">Posts</a>
+    </h1>
+
+    <main>
+      <h3 class="year">
+        {Math.ceil(wordCount / 200)} minute read ● {formattedDate}
+      </h3>
+      <h2 class="large">{entry.data.title}</h2>
+      <article class="prose">
+        <Content />
+      </article>
+    </main>
+  </section>
+</BaseLayout>
+
+<style>
+  main {
+    margin-top: 4em;
+  }
+
+  h1.small {
+    font-size: 24pt;
+    font-weight: 600;
+  }
+
+  h1 span {
+    color: rgb(var(--text));
+  }
+
+  h2.large {
+    font-size: 36pt;
+    font-weight: 700;
+  }
+
+  h3.year {
+    font-weight: 500;
+  }
+
+  article,
+  article > p {
+    font-size: 14pt;
+  }
+
+  article {
+    display: flex;
+    flex-direction: column;
+  }
+</style>
+
+<style is:inline>
+  @media only screen and (min-width: 1280px) {
+    footer {
+      max-width: 800px !important;
+    }
+  }
+
+  p code,
+  li code {
+    background-color: rgba(var(--accent), 0.1);
+    color: rgb(var(--accent));
+    padding: 0.2em;
+    border-radius: 0.2em;
+  }
+
+  article > pre {
+    padding: 1em;
+    border-radius: 0.2em;
+  }
+
+  .line-number {
+    display: inline-block;
+    width: 2em;
+    text-align: right;
+    margin-right: 1em;
+    color: #4c535a;
+    user-select: none;
+  }
+
+  pre {
+    position: relative;
+  }
+
+  pre.shiki {
+    overflow-x: scroll;
+  }
+
+  blockquote {
+    background-color: rgba(var(--primary), 0.1);
+    margin: 0;
+    padding: 1px 40px;
+    border-radius: 0.2em;
+    border-left: rgb(var(--primary)) 4px solid;
+  }
+
+  p:has(img) {
+    display: flex;
+    justify-content: center;
+  }
+
+  video {
+    width: 100%;
+  }
+
+  img {
+    max-width: 100%;
+    max-height: 50vh;
+  }
+
+  li {
+    padding-left: 0.2em;
+    margin: 1em 0;
+  }
+
+  ul,
+  ol {
+    margin: 0;
+  }
+
+  li::marker {
+    color: rgba(var(--text), 0.5);
+  }
+
+  svg {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  article h2 {
+    margin: 2em 0 1em 0;
+  }
+
+  article h3 {
+    margin: 2em 0 0 0;
+    color: rgb(var(--strong-text));
+    font-size: 16pt;
+  }
+</style>
+
+<script>
+  const preElements: NodeListOf<HTMLPreElement> =
+    document.querySelectorAll("pre.shiki");
+  preElements.forEach((preElement: HTMLPreElement) => {
+    const codeElement: HTMLElement | null = preElement.querySelector("code");
+
+    if (codeElement) {
+      const lines: NodeListOf<HTMLSpanElement> =
+        codeElement.querySelectorAll(".line");
+      lines.forEach((line: HTMLSpanElement, index: number) => {
+        const lineNumber: HTMLSpanElement = document.createElement("span");
+        lineNumber.classList.add("line-number");
+        lineNumber.textContent = (index + 1).toString();
+
+        if (index != lines.length - 1) line.prepend(lineNumber);
+      });
+    }
+  });
+</script>

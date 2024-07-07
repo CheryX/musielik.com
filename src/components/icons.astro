@@ -1,0 +1,21 @@
+---
+import "../styles/icons.css";
+
+interface Props {
+  type: "back" | "front" | "file" | "pin" | "web";
+  weight: "heavy" | "light";
+}
+
+const { type, weight } = Astro.props;
+let icon_name = {
+  back: "arrow_back",
+  front: "arrow_forward",
+  file: "description",
+  pin: "keep",
+  web: "web",
+};
+---
+
+<span class=`material-symbols-outlined material-symbols-${weight}`
+  >{icon_name[type]}</span
+>

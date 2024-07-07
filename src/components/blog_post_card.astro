@@ -1,0 +1,108 @@
+---
+interface Props {
+  title: string;
+  tags: string[];
+  pubDate: Date;
+  thumbnailUrl: string;
+  href: string;
+}
+
+const { title, tags, pubDate, thumbnailUrl, href } = Astro.props;
+const thumbnailPath = `url("/thumbnails/${thumbnailUrl}")`;
+
+const options: Intl.DateTimeFormatOptions = {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+};
+const formattedDate = pubDate.toLocaleDateString("en-US", options);
+---
+
+<div class="card">
+  <div class="cover"></div>
+  <div class="content">
+    <p class="tags">
+      {
+        tags.map((tag) => {
+          {
+            return <a href={`/tags/${tag}`}>{tag}</a>;
+          }
+        })
+      }
+    </p>
+    <h3><a href={`/posts/${href}`}>{title}</a></h3>
+    <p class="pub-date">{formattedDate}</p>
+  </div>
+</div>
+
+<hr />
+
+<style define:vars={{ thumbnailPath }}>
+  .card {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+  }
+
+  img {
+    display: block;
+    aspect-ratio: 1/1;
+    border-radius: 8px;
+    height: 100%;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.2em 0.8em;
+    text-transform: uppercase;
+    margin: 0;
+  }
+
+  .tags a {
+    color: inherit;
+    text-decoration: inherit;
+    margin: 0;
+    font-size: 14pt;
+  }
+
+  .tags a:hover {
+    color: rgb(var(--strong-text));
+  }
+
+  h3 {
+    color: rgb(var(--primary));
+    font-size: 16pt;
+    margin: 0.4em 0;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  h3 > a {
+    color: inherit;
+    text-decoration: inherit;
+  }
+
+  h3:hover {
+    text-decoration: underline;
+  }
+
+  .pub-date {
+    color: rgb(var(--strong-text));
+    font-size: 11pt;
+    margin-bottom: 0;
+  }
+
+  .cover {
+    flex: 0 0 auto;
+    width: 128px;
+    background-image: var(--thumbnailPath);
+    background-size: cover;
+    aspect-ratio: 1/1;
+    border-radius: 4px;
+  }
+</style>

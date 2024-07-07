@@ -1,0 +1,144 @@
+---
+import BaseLayout from "../layouts/base_layout.astro";
+import BlogPostCard from "../components/blog_post_card.astro";
+import ProjectCard from "../components/project_card.astro";
+import Icon from "../components/icons.astro";
+import projects from "../data/projects.json";
+import { getCollection } from "astro:content";
+
+const allBlogPosts = await getCollection("blog");
+allBlogPosts.sort((a, b) => {
+  return b.data.pubDate.getTime() - a.data.pubDate.getTime();
+});
+
+const featuredProjects = projects.filter((e) => e.featured);
+---
+
+<BaseLayout>
+  <section id="title" class="container">
+    <header>
+      <p class="primary">Hello, my name is</p>
+      <h1 class="strong gradient-text">Maciej Musielik</h1>
+      <p>
+        I am a dedicated Computer Science student with strong <strong
+          >coding skills</strong
+        > and a passion for <strong>web development.</strong>
+      </p>
+
+      <div id="articles">
+        <h2>Recent blog posts</h2>
+
+        {
+          allBlogPosts.slice(0, 2).map((post) => {
+            return (
+              <BlogPostCard
+                title={post.data.title}
+                pubDate={post.data.pubDate}
+                tags={post.data.tags}
+                thumbnailUrl={post.data.thumbnailUrl}
+                href={post.slug}
+              />
+            );
+          })
+        }
+
+        <a href="/posts"
+          >View all blog posts <Icon type="front" weight="light" />
+        </a>
+      </div>
+    </header>
+    <article>
+      <p class="starter">
+        My passion for computer science started around 2015 when I started
+        making custom scripts Minecraft servers using Skript.
+      </p>
+      <p>
+        Over the years, I have honed my skills in <strong
+          >HTML, CSS, JavaScript, and Python</strong
+        >, and have worked on several web development and other projects. My
+        first main accomplishment was the release of my discord bot <strong
+          >TobiasBot</strong
+        >, which was in around <strong>80</strong> discord servers before its end
+        of service.
+      </p>
+
+      <div class="flex-link">
+        <h2>Featured projects</h2>
+        <!-- <a href="/cv">Download Résumé <Icon type="file" weight="light" /> </a> -->
+      </div>
+
+      {
+        featuredProjects.map((project) => {
+          return (
+            <ProjectCard
+              title={project.title}
+              summary={project.summary}
+              tags={project.tags}
+              href={project.href}
+              year={project.year}
+            />
+          );
+        })
+      }
+
+      <hr />
+
+      <a href="/projects"
+        >View all projects <Icon type="front" weight="light" /></a
+      >
+    </article>
+  </section>
+</BaseLayout>
+
+<style>
+  @media only screen and (min-width: 1280px) {
+    #title {
+      display: flex;
+      gap: 4em;
+      justify-content: space-between;
+    }
+  }
+
+  .starter {
+    margin-top: 4em;
+  }
+
+  #title > * {
+    width: 100%;
+  }
+
+  #title header p {
+    max-width: 30ch;
+  }
+
+  h2 {
+    margin-top: 4em;
+    margin-bottom: 2em;
+  }
+
+  article {
+    text-align: justify;
+  }
+
+  article h2 {
+    margin: 0;
+  }
+
+  a {
+    font-size: 14pt;
+  }
+
+  .flex-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 4em;
+    margin-bottom: 1em;
+  }
+
+  /* .flex-link > a {
+    display: flex;
+    align-items: center;
+    gap: 0.3em;
+  } */
+</style>
